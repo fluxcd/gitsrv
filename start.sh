@@ -38,6 +38,7 @@ if [ ! -d "REPO_DIR" ]; then
   chmod -R ug+rwX .
   find . -type d -exec chmod g+s '{}' +
 fi
+ln -s ${REPO_DIR} /home/git/
 
 # -D flag avoids executing sshd as a daemon
 /usr/sbin/sshd -D

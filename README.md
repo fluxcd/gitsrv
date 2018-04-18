@@ -50,5 +50,5 @@ spec:
 Clone the repo from another pod that has the same `ssh-git` secret mounted:
 
 ```bash
-git clone -b master ssh://git@gitsrv/git-server/repos/k8s-podinfo.git
+git clone -b master ssh://git@gitsrv/~/k8s-podinfo.git
 ```
