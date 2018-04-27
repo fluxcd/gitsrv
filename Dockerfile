@@ -1,6 +1,6 @@
 FROM alpine:3.4
 
-RUN apk add --no-cache openssh git curl
+RUN apk add --no-cache openssh git curl bash
 
 RUN ssh-keygen -A
 

@@ -1,4 +1,8 @@
-#!/bin/sh
+#!/bin/bash
+
+set -o errexit
+set -o pipefail
+set -o nounset
 
 # If there is some public key in keys folder
 # then it copies its contain in authorized_keys file
