@@ -1,7 +1,7 @@
 NAME:=gitsrv
 DOCKER_REPOSITORY:=stefanprodan
 DOCKER_IMAGE_NAME:=$(DOCKER_REPOSITORY)/$(NAME)
-VERSION:=0.0.6
+VERSION:=0.0.8
 
 .PHONY: build
 build:
