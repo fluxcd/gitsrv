@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash +x
 
 set -o errexit
 set -o pipefail
@@ -32,7 +32,7 @@ REPO_DIR="/git-server/repos/${REPO}"
 init_repo() {
   mkdir "${REPO_DIR}"
   cd /git-server/repos
-  curl -v -sL "${TAR_URL}" | tar xz -C "./${REPO}" --strip-components=1
+  curl --verbose --location --fail "${TAR_URL}" | tar xz -C "./${REPO}" --strip-components=1
   cd "${REPO_DIR}"
   git init --shared=true
   git add .
