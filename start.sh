@@ -42,7 +42,6 @@ init_repo() {
   chown -R git:git .
   chmod -R ug+rwX .
   find . -type d -exec chmod g+s '{}' +
-  ln -s "${REPO_DIR}" /home/git/
 }
 
 if [ ! -d "${REPO_DIR}" ]; then
@@ -54,6 +53,9 @@ else
     init_repo
   fi
 fi
+
+# Link to home dir, this need to be done each time as this dir has the lifetime of the pod
+ln -s "${REPO_DIR}" /home/git/
 
 # -D flag avoids executing sshd as a daemon
 /usr/sbin/sshd -D
