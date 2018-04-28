@@ -27,12 +27,13 @@ git config --global user.email "root@gitsrv.git"
 git config --global user.name "root"
 
 # Init repo and seed from a tar.gz link
-REPO_DIR=/git-server/repos/${REPO}
-if [ ! -d "${REPO_DIR}" ]; then
-  mkdir ${REPO_DIR}
+REPO_DIR="/git-server/repos/${REPO}"
+
+init_repo() {
+  mkdir "${REPO_DIR}"
   cd /git-server/repos
-  curl -sL ${TAR_URL} | tar xz -C ./${REPO} --strip-components=1
-  cd ${REPO_DIR}
+  curl -sL "${TAR_URL}" | tar xz -C "./${REPO}" --strip-components=1
+  cd "${REPO_DIR}"
   git init --shared=true
   git add .
   git commit -m "init"
@@ -41,8 +42,18 @@ if [ ! -d "${REPO_DIR}" ]; then
   chown -R git:git .
   chmod -R ug+rwX .
   find . -type d -exec chmod g+s '{}' +
+  ln -s "${REPO_DIR}" /home/git/
+}
+
+if [ ! -d "${REPO_DIR}" ]; then
+  init_repo
+else
+  # When download fails, this script restarts but we end up with an empty dir
+  if [ ! -d "${REPO_DIR}/.git" ]; then
+    rm -rf "${REPO_DIR}"
+    init_repo
+  fi
 fi
-ln -s ${REPO_DIR} /home/git/
 
 # -D flag avoids executing sshd as a daemon
 /usr/sbin/sshd -D
