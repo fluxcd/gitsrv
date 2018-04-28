@@ -28,7 +28,7 @@ git config --global user.name "root"
 
 # Init repo and seed from a tar.gz link
 REPO_DIR=/git-server/repos/${REPO}
-if [ ! -d "REPO_DIR" ]; then
+if [ ! -d "${REPO_DIR}" ]; then
   mkdir ${REPO_DIR}
   cd /git-server/repos
   curl -sL ${TAR_URL} | tar xz -C ./${REPO} --strip-components=1
