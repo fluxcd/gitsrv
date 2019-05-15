@@ -32,7 +32,9 @@ REPO_DIR="/git-server/repos/${REPO}"
 init_repo() {
   mkdir "${REPO_DIR}"
   cd /git-server/repos
-  curl --verbose --location --fail "${TAR_URL}" | tar xz -C "./${REPO}" --strip-components=1
+  while ! curl --verbose --location --fail "${TAR_URL}" | tar xz -C "./${REPO}" --strip-components=1; do
+    sleep 1
+  done
   cd "${REPO_DIR}"
   git init --shared=true
   git add .
