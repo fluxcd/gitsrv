@@ -1,4 +1,4 @@
-#!/bin/bash +x
+#!/usr/bin/env bash +x
 
 set -o errexit
 set -o pipefail
@@ -23,8 +23,17 @@ if [ "$(ls -A /git-server/repos/)" ]; then
 fi
 
 # Set seeder user name
-git config --global user.email "root@gitsrv.git"
-git config --global user.name "root"
+git config --global user.email "${GIT_USER_EMAIL:-root@gitsrv.git}"
+git config --global user.name "${GIT_USER_NAME:-root}"
+
+if [[ ! -z "${GPG_KEYFILE}" ]]; then
+  # Import the key
+  gpg --import "${GPG_KEYFILE}"
+
+  # Grab key ID and configure git
+  key_id=$(gpg --no-tty --list-secret-keys --with-colons 2>/dev/null | awk -F: '/^sec:/ { print $5 }' | tail -1)
+  git config --global user.signingkey "${key_id}"
+fi
 
 # Init repo and seed from a tar.gz link
 REPO_DIR="/git-server/repos/${REPO}"
@@ -38,7 +47,11 @@ init_repo() {
   cd "${REPO_DIR}"
   git init --shared=true
   git add .
-  git commit -m "init"
+  gitcmd="git commit"
+  if [[ ! -z "${GPG_KEYFILE}" ]]; then
+    gitcmd="$gitcmd -S"
+  fi
+  $gitcmd -m "init"
   git checkout -b dummy
   cd /git-server/repos
   chown -R git:git .
