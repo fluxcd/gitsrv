@@ -26,7 +26,7 @@ fi
 git config --global user.email "${GIT_USER_EMAIL:-root@gitsrv.git}"
 git config --global user.name "${GIT_USER_NAME:-root}"
 
-if [[ ! -z "${GPG_KEYFILE}" ]]; then
+if [ -n "${GPG_KEYFILE}" ]; then
   # Import the key
   gpg --import "${GPG_KEYFILE}"
 
