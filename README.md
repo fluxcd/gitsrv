@@ -23,7 +23,7 @@ spec:
         name: gitsrv
     spec:
       containers:
-      - image: stefanprodan/gitsrv:0.0.12
+      - image: stefanprodan/gitsrv:0.1.1
         name: git
         env:
         - name: REPO
