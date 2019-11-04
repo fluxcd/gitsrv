@@ -23,13 +23,13 @@ spec:
         name: gitsrv
     spec:
       containers:
-      - image: stefanprodan/gitsrv:0.1.1
+      - image: stefanprodan/gitsrv:0.1.2
         name: git
         env:
         - name: REPO
           value: "k8s-podinfo.git"
         - name: TAR_URL
-          value: "https://github.com/stefanprodan/podinfo/archive/2.1.0.tar.gz"
+          value: "https://github.com/stefanprodan/podinfo/archive/3.1.0.tar.gz"
         ports:
         - containerPort: 22
           name: ssh
