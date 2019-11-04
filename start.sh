@@ -48,7 +48,7 @@ init_repo() {
   git init --shared=true
   git add .
   gitcmd="git commit"
-  if [[ ! -z "${GPG_KEYFILE}" ]]; then
+  if [ ! -n "${GPG_KEYFILE}" ]; then
     gitcmd="$gitcmd -S"
   fi
   $gitcmd -m "init"
