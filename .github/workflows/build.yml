@@ -11,4 +11,4 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Push container
-        run: make build push
+        run: make build check-version push

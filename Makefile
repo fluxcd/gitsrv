@@ -10,3 +10,7 @@ build:
 .PHONY: push
 push:
 	docker push $(DOCKER_IMAGE_NAME):$(VERSION)
+
+.PHONY: check-version
+check-version:
+	@curl --silent -f -lSL "https://hub.docker.com/v2/repositories/$(DOCKER_IMAGE_NAME)/tags/$(VERSION)" &> /dev/null && { echo "$(VERSION) already exists on DockerHub"; exit 1; } || exit 0
