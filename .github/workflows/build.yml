@@ -1,7 +1,6 @@
 name: build
-
 on: [push]
-
+jobs:
   push-container:
     runs-on: ubuntu-latest
     steps:
@@ -12,4 +11,4 @@ on: [push]
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Push container
-        run: make push
+        run: make build push
