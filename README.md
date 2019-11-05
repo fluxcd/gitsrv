@@ -5,7 +5,7 @@ SSH only Git Server used to host a git repository initialized from a tar.gz URL.
 Kubernetes deployment example:
 
 ```yaml
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
@@ -27,7 +27,7 @@ spec:
         name: git
         env:
         - name: REPO
-          value: "k8s-podinfo.git"
+          value: "podinfo.git"
         - name: TAR_URL
           value: "https://github.com/stefanprodan/podinfo/archive/3.1.0.tar.gz"
         ports:
@@ -50,5 +50,5 @@ spec:
 Clone the repo from another pod that has the same `ssh-git` secret mounted:
 
 ```bash
-git clone -b master ssh://git@gitsrv/~/k8s-podinfo.git
+git clone -b master ssh://git@gitsrv/~/podinfo.git
 ```
