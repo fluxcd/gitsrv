@@ -16,6 +16,9 @@ spec:
               value: "https://github.com/fluxcd/flux-get-started/archive/master.tar.gz"
             - name: GPG_KEYFILE
               value: /git-server/gpg/gitsrv.asc
+          volumeMounts:
+            - mountPath: /git-server/gpg
+              name: git-gpg-keys
       volumes:
         - name: git-gpg-keys
           secret:
