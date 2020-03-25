@@ -1,4 +1,3 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -17,7 +16,7 @@ spec:
     spec:
       containers:
         - name: git
-          image: test/gitsrv:latest
+          image: fluxcd/gitsrv:latest
           imagePullPolicy: IfNotPresent
           env:
             - name: REPO
@@ -39,19 +38,3 @@ spec:
             secretName: ssh-key
         - name: git-server-data
           emptyDir: {}
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    name: gitsrv
-  name: gitsrv
-spec:
-  ports:
-    - name: ssh
-      port: 22
-      protocol: TCP
-      targetPort: ssh
-  selector:
-    name: gitsrv
-  type: ClusterIP

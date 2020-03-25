@@ -1,0 +1,11 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitsrv
+spec:
+  template:
+    spec:
+      containers:
+        - name: git
+          image: test/gitsrv:latest
+          imagePullPolicy: IfNotPresent

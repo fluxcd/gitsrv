@@ -5,8 +5,8 @@ on:
   push:
     branches:
       - master
-    tags-ignore:
-      - v.*
+    tags:
+      - '*'
 
 jobs:
   kubernetes:
