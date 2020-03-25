@@ -1,7 +1,7 @@
 NAME:=gitsrv
 DOCKER_REPOSITORY:=fluxcd
 DOCKER_IMAGE_NAME:=$(DOCKER_REPOSITORY)/$(NAME)
-VERSION:=latest
+VERSION:=$(shell grep 'newTag' deploy/kustomization.yaml | awk '{ print $$2 }' | tr -d '"')
 
 .PHONY: build
 build:
@@ -9,6 +9,6 @@ build:
 
 .PHONY: release
 release:
-	git tag "v$(VERSION)"
-	git push origin "v$(VERSION)"
+	git tag "$(VERSION)"
+	git push origin "$(VERSION)"
 
