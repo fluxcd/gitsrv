@@ -1,5 +1,7 @@
 # gitsrv
 
+[![build](https://github.com/fluxcd/gitsrv/workflows/ci/badge.svg)](https://github.com/fluxcd/gitsrv/actions)
+
 SSH only Git Server used to host a git repository initialized from a tar.gz URL.
 
 Kubernetes deployment example:
@@ -23,7 +25,7 @@ spec:
         name: gitsrv
     spec:
       containers:
-      - image: stefanprodan/gitsrv:0.1.2
+      - image: fluxcd/gitsrv:0.1.3
         name: git
         env:
         - name: REPO
