@@ -19,6 +19,14 @@ kubectl create secret generic ssh-key \
   --from-file="$gen_dir/id_rsa.pub"
 ```
 
+Export a GPG key (optional):
+
+```bash
+gpg --export-secret-keys key_id | \
+kubectl create secret generic gpg-signing-key \
+  --from-file=gitsrv.asc=/dev/stdin
+```
+
 Create a kustomization and set `TAR_URL`:
 
 ```bash
@@ -44,6 +52,15 @@ patches:
               value: "cluster.git"
             - name: TAR_URL
               value: "https://github.com/fluxcd/flux-get-started/archive/master.tar.gz"
+            - name: GPG_KEYFILE
+              value: /git-server/gpg/gitsrv.asc
+          volumeMounts:
+            - mountPath: /git-server/gpg
+              name: git-gpg-keys
+      volumes:
+        - name: git-gpg-keys
+          secret:
+            secretName: gpg-signing-key
 EOF
 ```
 

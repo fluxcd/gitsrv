@@ -10,11 +10,8 @@ jobs:
   kubernetes:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
       - uses: engineerd/setup-kind@v0.3.0
-        with:
-          version: "v0.7.0"
       - name: Build container
         run: test/build.sh
       - name: Generate SSH key
@@ -28,6 +25,28 @@ jobs:
         with:
           name: known_hosts
           path: known_hosts.txt
+      - name: Test Git over SSH
+        run: test/git-ls-remote.sh
+      - name: Debug failure
+        if: failure()
+        run: test/debug.sh
+  kubernetes-gpg:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: engineerd/setup-kind@v0.3.0
+      - name: Build container
+        run: test/build.sh
+      - name: Generate SSH key
+        run: test/ssh-keygen.sh
+      - name: Generate GPG key
+        run: test/gpg-keygen.sh
+      - name: Deploy and verify
+        run: test/deploy.sh deploy-gpg
+      - name: Generate known_hosts
+        run: test/ssh-keyscan.sh
+      - name: Test Git over SSH
+        run: test/git-ls-remote.sh
       - name: Debug failure
         if: failure()
         run: test/debug.sh
