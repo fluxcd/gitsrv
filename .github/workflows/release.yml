@@ -1,0 +1,46 @@
+name: release
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: engineerd/setup-kind@v0.3.0
+      - name: Push image
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: fluxcd/gitsrv
+          tag_with_ref: true
+      - name: Run release in cluster
+        run: |
+          test/ssh-keygen.sh
+          kubectl apply -k deploy
+          kubectl rollout status deployment/gitsrv --timeout=1m
+      - name: Generate the SSH fingerprint
+        run: test/ssh-keyscan.sh
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+      - name: Upload SSH fingerprint
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./known_hosts.txt
+          asset_name: known_hosts.txt
+          asset_content_type: text/plain

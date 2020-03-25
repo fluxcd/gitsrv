@@ -5,4 +5,4 @@ resources:
 - service.yaml
 images:
   - name: fluxcd/gitsrv
-    newTag: 1.0.0
+    newTag: v1.0.0

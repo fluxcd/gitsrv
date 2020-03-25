@@ -9,6 +9,6 @@ build:
 
 .PHONY: release
 release:
-	git tag "v$(VERSION)"
-	git push origin "v$(VERSION)"
+	git tag "$(VERSION)"
+	git push origin "$(VERSION)"
 

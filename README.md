@@ -29,3 +29,12 @@ Clone the repo from another pod that has the same `ssh-key` secret mounted:
 ```bash
 git clone -b master ssh://git@gitsrv/~/cluster.git
 ```
+
+## Release
+
+To make a gitsrv release do:
+* create a branch `prepare-v1.0.0`
+* bump the version in `deploy/kustomization/yaml`
+* merge PR
+* pull master and run `VERSION=1.0.0 make release`
+* the release workflow will kick in and push the image to Docker Hub and upload the SSH fingerprint to the release assets

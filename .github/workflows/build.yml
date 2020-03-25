@@ -3,8 +3,7 @@ on:
   push:
     branches:
       - master
-    tags:
-      - '*'
+
 jobs:
   build-push:
     runs-on: ubuntu-latest
