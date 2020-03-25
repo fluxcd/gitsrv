@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - master
+    tags:
+      - '*'
 jobs:
   push-container:
     runs-on: ubuntu-latest
