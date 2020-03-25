@@ -1,0 +1,35 @@
+name: e2e
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+    tags:
+      - '*'
+
+jobs:
+  kubernetes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - uses: engineerd/setup-kind@v0.3.0
+        with:
+          version: "v0.7.0"
+      - name: Build container
+        run: test/build.sh
+      - name: Generate SSH key
+        run: test/ssh-keygen.sh
+      - name: Deploy and verify
+        run: test/deploy.sh
+      - name: Generate known_hosts
+        run: test/ssh-keyscan.sh
+      - name: Upload known_hosts
+        uses: actions/upload-artifact@v1
+        with:
+          name: known_hosts
+          path: known_hosts.txt
+      - name: Debug failure
+        if: failure()
+        run: test/debug.sh
