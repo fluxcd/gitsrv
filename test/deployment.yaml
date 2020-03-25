@@ -18,6 +18,7 @@ spec:
       containers:
         - name: git
           image: test/gitsrv:latest
+          imagePullPolicy: IfNotPresent
           env:
             - name: REPO
               value: "cluster.git"

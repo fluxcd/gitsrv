@@ -4,4 +4,4 @@ repo_root=$(git rev-parse --show-toplevel)
 
 kubectl apply -f "$repo_root/test/deployment.yaml"
 
-kubectl rollout status deployment/gitsrv
+kubectl rollout status deployment/gitsrv --timeout=1m

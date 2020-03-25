@@ -23,3 +23,6 @@ jobs:
         run: test/ssh-keygen.sh
       - name: Deploy and verify
         run: test/deploy.sh
+      - name: The job has failed
+        if: failure()
+        run: test/debug.sh
