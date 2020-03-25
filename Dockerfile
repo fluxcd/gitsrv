@@ -1,4 +1,4 @@
-FROM alpine:3.4
+FROM alpine:3.11
 
 RUN apk add --no-cache openssh git curl bash gnupg
 
