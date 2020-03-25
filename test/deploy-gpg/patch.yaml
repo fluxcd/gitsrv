@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitsrv
+spec:
+  template:
+    spec:
+      containers:
+        - name: git
+          image: test/gitsrv:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: REPO
+              value: "cluster.git"
+            - name: TAR_URL
+              value: "https://github.com/fluxcd/flux-get-started/archive/master.tar.gz"
+            - name: GPG_KEYFILE
+              value: /git-server/gpg/gitsrv.asc
+      volumes:
+        - name: git-gpg-keys
+          secret:
+            secretName: gpg-signing-key

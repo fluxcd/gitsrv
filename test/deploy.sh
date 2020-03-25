@@ -2,6 +2,8 @@
 
 repo_root=$(git rev-parse --show-toplevel)
 
-kubectl apply -k "$repo_root/test/deploy"
+deploy=${1:-deploy}
+
+kubectl apply -k "$repo_root/test/$deploy"
 
 kubectl rollout status deployment/gitsrv --timeout=1m
