@@ -1,5 +1,5 @@
-#!/usr/bin/env bash +x
-
+#!/usr/bin/env bash
+set +x
 set -o errexit
 set -o pipefail
 set -o nounset
@@ -40,19 +40,23 @@ REPO_DIR="/git-server/repos/${REPO}"
 
 init_repo() {
   mkdir "${REPO_DIR}"
-  cd /git-server/repos
-  while ! curl --verbose --location --fail "${TAR_URL}" | tar xz -C "./${REPO}" --strip-components=1; do
-    sleep 1
-  done
   cd "${REPO_DIR}"
   git init --shared=true
-  git add .
-  gitcmd="git commit"
-  if [ -n "${GPG_KEYFILE-}" ]; then
-    gitcmd="$gitcmd -S"
+
+  if [ -n "${TAR_URL-}" ]; then
+    while ! curl --verbose --location --fail "${TAR_URL}" | tar xz -C "./" --strip-components=1; do
+      sleep 1
+    done
+
+    git add .
+    gitcmd="git commit"
+    if [ -n "${GPG_KEYFILE-}" ]; then
+      gitcmd="$gitcmd -S"
+    fi
+    $gitcmd -m "init"
+    git checkout -b dummy
   fi
-  $gitcmd -m "init"
-  git checkout -b dummy
+
   cd /git-server/repos
   chown -R git:git .
   chmod -R ug+rwX .
@@ -62,8 +66,8 @@ init_repo() {
 if [ ! -d "${REPO_DIR}" ]; then
   init_repo
 else
-  # When download fails, this script restarts but we end up with an empty dir
-  if [ ! -d "${REPO_DIR}/.git" ]; then
+  # When download fails, this script restarts but we end up without any commits
+  if [ -n "${TAR_URL}" ] && [ "$(git rev-list --count HEAD --git-dir="${REPO_DIR}/.git")" -eq 0 ]; then
     rm -rf "${REPO_DIR}"
     init_repo
   fi
