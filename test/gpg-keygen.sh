@@ -25,5 +25,6 @@ gpg --batch --gen-key "$batchcfg"
 key_id=$(gpg --no-tty --list-secret-keys --with-colons "$name" 2> /dev/null |
   awk -F: '/^sec:/ { print $5 }' | tail -1)
 
-gpg --export-secret-keys "$key_id" | kubectl create secret generic gpg-signing-key \
+gpg --export-secret-keys "$key_id" | \
+kubectl create secret generic gpg-signing-key \
   --from-file=gitsrv.asc=/dev/stdin
