@@ -23,8 +23,13 @@ jobs:
         run: test/ssh-keygen.sh
       - name: Deploy and verify
         run: test/deploy.sh
-      - name: Generate known hosts
+      - name: Generate known_hosts
         run: test/ssh-keyscan.sh
-      - name: The job has failed
+      - name: Upload known_hosts
+        uses: actions/upload-artifact@v1
+        with:
+          name: known_hosts
+          path: known_hosts.txt
+      - name: Debug failure
         if: failure()
         run: test/debug.sh
