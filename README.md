@@ -19,14 +19,6 @@ kubectl create secret generic ssh-key \
   --from-file="$gen_dir/id_rsa.pub"
 ```
 
-Export a GPG key (optional):
-
-```bash
-gpg --export-secret-keys key_id | \
-kubectl create secret generic gpg-signing-key \
-  --from-file=gitsrv.asc=/dev/stdin
-```
-
 Create a kustomization and set `TAR_URL`:
 
 ```bash
@@ -38,29 +30,11 @@ patches:
     kind: Deployment
     name: gitsrv
   patch: |-
-    apiVersion: apps/v1
-    kind: Deployment
-    metadata:
-      name: gitsrv
-    spec:
-      template:
-        spec:
-          containers:
-          - name: gitsrv
-          env:
-            - name: REPO
-              value: "cluster.git"
-            - name: TAR_URL
-              value: "https://github.com/fluxcd/flux-get-started/archive/master.tar.gz"
-            - name: GPG_KEYFILE
-              value: /git-server/gpg/gitsrv.asc
-          volumeMounts:
-            - mountPath: /git-server/gpg
-              name: git-gpg-keys
-      volumes:
-        - name: git-gpg-keys
-          secret:
-            secretName: gpg-signing-key
+    - op: update
+      path: /spec/template/spec/containers/0/env/-
+      value:
+        name: TAR_URL
+        value: "https://github.com/fluxcd/flux-get-started/archive/master.tar.gz"
 EOF
 ```
 
@@ -74,6 +48,49 @@ Clone the repo from another pod that has the same `ssh-key` secret mounted:
 
 ```bash
 git clone -b master ssh://git@gitsrv/~/cluster.git
+```
+
+### Export a GPG key (optional):
+
+```bash
+gpg --export-secret-keys key_id | \
+kubectl create secret generic gpg-signing-key \
+  --from-file=gitsrv.asc=/dev/stdin
+```
+
+Replace kustomization with:
+
+```bash
+cat > kustomization.yaml <<EOF
+bases:
+  - github.com/fluxcd/gitsrv/deploy
+patches:
+- target:
+    kind: Deployment
+    name: gitsrv
+  patch: |-
+    - op: update
+      path: /spec/template/spec/containers/0/env/-
+      value:
+        name: TAR_URL
+        value: "https://github.com/fluxcd/flux-get-started/archive/master.tar.gz"
+    - op: add
+      path: /spec/template/spec/containers/0/env/-
+      value:
+        name: GPG_KEYFILE
+        value: /git-server/gpg/gitsrv.asc
+    - op: add
+      path: /spec/template/spec/containers/0/volumeMounts/-
+      value:
+        mountPath: /git-server/gpg
+        name: git-gpg-keys
+    - op: add
+      path: /spec/template/spec/volumes/-
+      value:
+        name: git-gpg-keys
+        secret:
+          secretName: gpg-signing-key
+EOF
 ```
 
 ## Release
